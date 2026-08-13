@@ -20,7 +20,7 @@ export default function OrderStatus() {
       apiGet(`/api/orders/${id}`).then(setOrder).catch((err) => setError(err.message));
     }
     load();
-    const interval = setInterval(load, 15000); // refresh every 15s
+    const interval = setInterval(load, 15000);
     return () => clearInterval(interval);
   }, [id]);
 

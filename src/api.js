@@ -1,5 +1,3 @@
-// Set this to your deployed backend URL once you deploy to Render.
-// While testing locally, it falls back to localhost.
 export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 export async function apiGet(path, token) {

@@ -54,7 +54,6 @@ textarea:focus-visible {
   padding: 0 20px;
 }
 
-/* Header */
 .site-header {
   position: sticky;
   top: 0;
@@ -106,7 +105,6 @@ textarea:focus-visible {
   padding: 0 4px;
 }
 
-/* Hero */
 .hero {
   padding: 48px 20px 32px;
   max-width: 960px;
@@ -152,7 +150,6 @@ textarea:focus-visible {
   padding: 10px;
 }
 
-/* Menu */
 .section-title {
   font-size: 20px;
   font-weight: 700;
@@ -221,7 +218,6 @@ textarea:focus-visible {
 
 .add-button:active { background: var(--gold-dark); }
 
-/* Cart drawer */
 .drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -310,9 +306,7 @@ textarea:focus-visible {
   margin-top: 16px;
 }
 
-.primary-button:disabled {
-  opacity: 0.5;
-}
+.primary-button:disabled { opacity: 0.5; }
 
 .empty-state {
   text-align: center;
@@ -320,16 +314,13 @@ textarea:focus-visible {
   padding: 40px 0;
 }
 
-/* Checkout / forms */
 .form-page {
   max-width: 480px;
   margin: 0 auto;
   padding: 32px 20px 60px;
 }
 
-.field {
-  margin-bottom: 16px;
-}
+.field { margin-bottom: 16px; }
 
 .field label {
   display: block;
@@ -395,7 +386,6 @@ textarea:focus-visible {
 .status-delivered { background: rgba(51,80,46,0.9); color: white; }
 .status-cancelled { background: rgba(166,58,46,0.15); color: var(--chili); }
 
-/* Owner dashboard */
 .dash-header {
   display: flex;
   justify-content: space-between;

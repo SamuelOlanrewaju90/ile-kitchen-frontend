@@ -18,9 +18,7 @@ export default function CartDrawer({ open, onClose }) {
       <div className="drawer">
         <div className="drawer-header">
           <h2>Your order</h2>
-          <button className="close-button" onClick={onClose} aria-label="Close cart">
-            ×
-          </button>
+          <button className="close-button" onClick={onClose} aria-label="Close cart">×</button>
         </div>
 
         {items.length === 0 ? (
@@ -31,9 +29,7 @@ export default function CartDrawer({ open, onClose }) {
               <div className="cart-line" key={item.id}>
                 <div>
                   <div style={{ fontWeight: 600 }}>{item.name}</div>
-                  <div style={{ fontSize: 13, color: 'rgba(32,26,21,0.6)' }}>
-                    ₦{item.price.toLocaleString()} each
-                  </div>
+                  <div style={{ fontSize: 13, color: 'rgba(32,26,21,0.6)' }}>₦{item.price.toLocaleString()} each</div>
                 </div>
                 <div className="qty-control">
                   <button onClick={() => changeQuantity(item.id, -1)} aria-label="Decrease quantity">−</button>
@@ -52,9 +48,7 @@ export default function CartDrawer({ open, onClose }) {
               <span>Calculated at checkout</span>
             </div>
 
-            <button className="primary-button" onClick={goToCheckout}>
-              Go to checkout
-            </button>
+            <button className="primary-button" onClick={goToCheckout}>Go to checkout</button>
           </>
         )}
       </div>

@@ -13,9 +13,7 @@ export default function MenuItemCard({ item }) {
       {item.description && <div className="menu-card-desc">{item.description}</div>}
       <div className="menu-card-footer">
         <span className="price">₦{Number(item.price).toLocaleString()}</span>
-        <button className="add-button" onClick={() => addItem(item)}>
-          Add
-        </button>
+        <button className="add-button" onClick={() => addItem(item)}>Add</button>
       </div>
     </div>
   );

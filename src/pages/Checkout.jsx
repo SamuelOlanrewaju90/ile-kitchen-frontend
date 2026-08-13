@@ -50,6 +50,8 @@ export default function Checkout() {
         payment_method: paymentMethod,
         payment_reference
       });
+      // Remember this phone number so "My orders" can look up history later
+      localStorage.setItem('customer_phone', form.phone.trim());
       clearCart();
       navigate(`/order/${order.id}`);
     } catch (err) {

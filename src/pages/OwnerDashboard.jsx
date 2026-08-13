@@ -18,7 +18,7 @@ export default function OwnerDashboard() {
 
   useEffect(() => {
     load();
-    const interval = setInterval(load, 20000); // poll for new orders
+    const interval = setInterval(load, 20000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

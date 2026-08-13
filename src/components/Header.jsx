@@ -10,10 +10,15 @@ export default function Header({ onOpenCart }) {
         <Link to="/" className="brand">
           Il<span>é</span> Kitchen
         </Link>
-        <button className="cart-button" onClick={onOpenCart}>
-          Cart
-          {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
-        </button>
+        <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
+          <Link to="/my-orders" style={{ fontSize: 14, fontWeight: 600 }}>
+            My orders
+          </Link>
+          <button className="cart-button" onClick={onOpenCart}>
+            Cart
+            {itemCount > 0 && <span className="cart-badge">{itemCount}</span>}
+          </button>
+        </div>
       </div>
     </header>
   );
