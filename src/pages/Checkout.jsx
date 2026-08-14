@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext.jsx';
-import { apiPost } from '../api.js';
+import { apiPost, apiGet } from '../api.js';
 
 const DELIVERY_FEE = 500;
 const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
@@ -14,8 +14,16 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState('cod');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    apiGet('/api/settings').then(setSettings).catch(() => {});
+  }, []);
 
   const total = subtotal + DELIVERY_FEE;
+  const isClosed = settings && settings.restaurant_open === 'false';
+  const minOrder = settings ? Number(settings.min_order_amount || 0) : 0;
+  const belowMinimum = minOrder > 0 && subtotal < minOrder;
 
   function update(field, value) {
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -34,6 +42,10 @@ export default function Checkout() {
       setError('Your cart is empty.');
       return false;
     }
+    if (belowMinimum) {
+      setError(`Minimum order amount is ₦${minOrder.toLocaleString()}. Add a bit more to your cart.`);
+      return false;
+    }
     return true;
   }
 
@@ -50,7 +62,6 @@ export default function Checkout() {
         payment_method: paymentMethod,
         payment_reference
       });
-      // Remember this phone number so "My orders" can look up history later
       localStorage.setItem('customer_phone', form.phone.trim());
       clearCart();
       navigate(`/order/${order.id}`);
@@ -70,7 +81,6 @@ export default function Checkout() {
       return;
     }
 
-    // Paystack flow
     if (!PAYSTACK_PUBLIC_KEY) {
       setError('Online payment is not configured yet. Please choose pay on delivery.');
       return;
@@ -83,7 +93,7 @@ export default function Checkout() {
     const handler = window.PaystackPop.setup({
       key: PAYSTACK_PUBLIC_KEY,
       email: form.email,
-      amount: Math.round(total * 100), // kobo
+      amount: Math.round(total * 100),
       currency: 'NGN',
       ref: `ILE-${Date.now()}`,
       callback: function (response) {
@@ -96,11 +106,29 @@ export default function Checkout() {
     handler.openIframe();
   }
 
+  if (isClosed) {
+    return (
+      <div className="form-page">
+        <h1 style={{ fontSize: 26, marginBottom: 12 }}>We're closed right now</h1>
+        <p style={{ color: 'rgba(32,26,21,0.7)' }}>
+          Ordering is paused until we reopen. Please check back soon, or message us on WhatsApp for updates.
+        </p>
+        <Link to="/" style={{ display: 'inline-block', marginTop: 20, fontWeight: 600 }}>
+          ← Back to menu
+        </Link>
+      </div>
+    );
+  }
+
   return (
     <div className="form-page">
       <h1 style={{ fontSize: 26, marginBottom: 20 }}>Checkout</h1>
 
       {error && <p className="error-banner">{error}</p>}
+
+      {minOrder > 0 && (
+        <p className="min-order-notice">Minimum order: ₦{minOrder.toLocaleString()}</p>
+      )}
 
       <div className="field">
         <label>Full name</label>
@@ -113,6 +141,9 @@ export default function Checkout() {
       <div className="field">
         <label>Delivery address</label>
         <textarea rows={3} value={form.address} onChange={(e) => update('address', e.target.value)} />
+        <p className="min-order-notice" style={{ marginTop: 6 }}>
+          Not sure if we deliver to your area? Message us on WhatsApp to check before ordering.
+        </p>
       </div>
       <div className="field">
         <label>Notes (optional)</label>
@@ -155,7 +186,7 @@ export default function Checkout() {
         <span>₦{total.toLocaleString()}</span>
       </div>
 
-      <button className="primary-button" disabled={loading} onClick={handlePlaceOrder}>
+      <button className="primary-button" disabled={loading || belowMinimum} onClick={handlePlaceOrder}>
         {loading ? 'Placing order…' : paymentMethod === 'cod' ? 'Place order' : `Pay ₦${total.toLocaleString()}`}
       </button>
     </div>

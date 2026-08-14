@@ -430,3 +430,172 @@ textarea:focus-visible {
   font-size: 13px;
   padding: 30px 20px 50px;
 }
+
+/* Closed banner */
+.closed-banner {
+  background: var(--chili);
+  color: white;
+  text-align: center;
+  padding: 10px 20px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+/* Hero meta row: rating + delivery time */
+.hero-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+  font-size: 14px;
+  color: rgba(32,26,21,0.7);
+}
+.hero-meta span { display: flex; align-items: center; gap: 4px; }
+.star { color: var(--gold-dark); }
+
+/* Featured badge on menu cards */
+.featured-badge {
+  display: inline-block;
+  background: var(--gold);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+  border-radius: 999px;
+  width: fit-content;
+}
+
+/* Minimum order notice on checkout */
+.min-order-notice {
+  font-size: 13px;
+  color: rgba(32,26,21,0.6);
+  margin-top: -8px;
+  margin-bottom: 16px;
+}
+
+/* WhatsApp floating button */
+.whatsapp-fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 15;
+  background: #25D366;
+  color: white;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  text-decoration: none;
+  font-size: 26px;
+}
+
+/* Order-again + review buttons on My Orders */
+.order-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.secondary-button {
+  flex: 1;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px;
+  font-weight: 600;
+  font-size: 13px;
+}
+.secondary-button.active {
+  border-color: var(--leaf);
+  color: var(--leaf);
+}
+
+/* Review form */
+.review-form {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.star-picker {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.star-picker button {
+  background: none;
+  border: none;
+  font-size: 26px;
+  color: var(--line);
+  padding: 0;
+}
+.star-picker button.filled { color: var(--gold-dark); }
+.review-submitted {
+  font-size: 13px;
+  color: var(--leaf);
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+/* Owner dashboard settings panel */
+.settings-panel {
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+}
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  gap: 12px;
+}
+.settings-row:last-of-type { border-bottom: none; }
+.settings-row label {
+  font-weight: 600;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.settings-row input[type="text"],
+.settings-row input[type="number"] {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  width: 140px;
+  text-align: right;
+}
+.toggle-switch {
+  position: relative;
+  width: 46px;
+  height: 26px;
+  flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: var(--leaf); }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }

@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import CartDrawer from './components/CartDrawer.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import WhatsAppButton from './components/WhatsAppButton.jsx';
 import Home from './pages/Home.jsx';
 import Checkout from './pages/Checkout.jsx';
 import OrderStatus from './pages/OrderStatus.jsx';
@@ -17,6 +18,7 @@ export default function App() {
     <>
       <Header onOpenCart={() => setCartOpen(true)} />
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} />
+      <WhatsAppButton />
 
       <Routes>
         <Route path="/" element={<Home />} />

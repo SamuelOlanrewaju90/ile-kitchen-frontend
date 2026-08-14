@@ -5,6 +5,7 @@ export default function MenuItemCard({ item }) {
 
   return (
     <div className="menu-card">
+      {item.featured && <span className="featured-badge">Chef's Pick</span>}
       <div
         className="menu-card-image"
         style={item.image_url ? { backgroundImage: `url(${item.image_url})` } : undefined}
@@ -13,7 +14,9 @@ export default function MenuItemCard({ item }) {
       {item.description && <div className="menu-card-desc">{item.description}</div>}
       <div className="menu-card-footer">
         <span className="price">₦{Number(item.price).toLocaleString()}</span>
-        <button className="add-button" onClick={() => addItem(item)}>Add</button>
+        <button className="add-button" onClick={() => addItem(item)}>
+          Add
+        </button>
       </div>
     </div>
   );
