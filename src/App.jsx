@@ -2,14 +2,17 @@ import { useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header.jsx';
 import CartDrawer from './components/CartDrawer.jsx';
-import ProtectedRoute from './components/ProtectedRoute.jsx';
 import WhatsAppButton from './components/WhatsAppButton.jsx';
-import Home from './pages/Home.jsx';
+import { VendorRoute, AdminRoute } from './components/ProtectedRoute.jsx';
+import VendorList from './pages/VendorList.jsx';
+import VendorStorefront from './pages/VendorStorefront.jsx';
 import Checkout from './pages/Checkout.jsx';
 import OrderStatus from './pages/OrderStatus.jsx';
 import MyOrders from './pages/MyOrders.jsx';
-import OwnerLogin from './pages/OwnerLogin.jsx';
-import OwnerDashboard from './pages/OwnerDashboard.jsx';
+import VendorRegister from './pages/VendorRegister.jsx';
+import VendorLogin from './pages/VendorLogin.jsx';
+import VendorDashboard from './pages/VendorDashboard.jsx';
+import AdminPanel from './pages/AdminPanel.jsx';
 
 export default function App() {
   const [cartOpen, setCartOpen] = useState(false);
@@ -21,22 +24,19 @@ export default function App() {
       <WhatsAppButton />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<VendorList />} />
+        <Route path="/vendor/:id" element={<VendorStorefront />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order/:id" element={<OrderStatus />} />
         <Route path="/my-orders" element={<MyOrders />} />
-        <Route path="/owner/login" element={<OwnerLogin />} />
-        <Route
-          path="/owner"
-          element={
-            <ProtectedRoute>
-              <OwnerDashboard />
-            </ProtectedRoute>
-          }
-        />
+
+        <Route path="/vendor/register" element={<VendorRegister />} />
+        <Route path="/vendor/login" element={<VendorLogin />} />
+        <Route path="/vendor/dashboard" element={<VendorRoute><VendorDashboard /></VendorRoute>} />
+        <Route path="/admin" element={<AdminRoute><AdminPanel /></AdminRoute>} />
       </Routes>
 
-      <p className="footer-note">Ilé Kitchen · Home-cooked, delivered by us.</p>
+      <p className="footer-note">Ilé Market · Home-cooked food, delivered by local vendors.</p>
     </>
   );
 }

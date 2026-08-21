@@ -1,6 +1,6 @@
 import { useCart } from '../context/CartContext.jsx';
 
-export default function MenuItemCard({ item }) {
+export default function MenuItemCard({ item, vendorId, vendorName }) {
   const { addItem } = useCart();
 
   return (
@@ -14,7 +14,7 @@ export default function MenuItemCard({ item }) {
       {item.description && <div className="menu-card-desc">{item.description}</div>}
       <div className="menu-card-footer">
         <span className="price">₦{Number(item.price).toLocaleString()}</span>
-        <button className="add-button" onClick={() => addItem(item)}>
+        <button className="add-button" onClick={() => addItem(item, vendorId, vendorName)}>
           Add
         </button>
       </div>

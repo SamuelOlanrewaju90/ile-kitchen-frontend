@@ -30,7 +30,9 @@ export default function OrderStatus() {
   return (
     <div className="form-page">
       <h1 style={{ fontSize: 26 }}>Thank you, {order.customer_name.split(' ')[0]}!</h1>
-      <p style={{ color: 'rgba(32,26,21,0.7)', marginBottom: 20 }}>Order #{order.id}</p>
+      <p style={{ color: 'rgba(32,26,21,0.7)', marginBottom: 20 }}>
+        Order #{order.id} {order.vendor_name && `— ${order.vendor_name}`}
+      </p>
 
       <span className={`status-badge status-${order.order_status}`}>
         {STATUS_LABELS[order.order_status]}

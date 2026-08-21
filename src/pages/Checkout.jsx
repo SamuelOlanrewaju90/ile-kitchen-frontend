@@ -7,7 +7,7 @@ const DELIVERY_FEE = 500;
 const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || '';
 
 export default function Checkout() {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, subtotal, clearCart, vendorId, vendorName } = useCart();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ customer_name: '', phone: '', address: '', notes: '', email: '' });
@@ -21,7 +21,6 @@ export default function Checkout() {
   }, []);
 
   const total = subtotal + DELIVERY_FEE;
-  const isClosed = settings && settings.restaurant_open === 'false';
   const minOrder = settings ? Number(settings.min_order_amount || 0) : 0;
   const belowMinimum = minOrder > 0 && subtotal < minOrder;
 
@@ -30,16 +29,16 @@ export default function Checkout() {
   }
 
   function validate() {
+    if (items.length === 0 || !vendorId) {
+      setError('Your cart is empty.');
+      return false;
+    }
     if (!form.customer_name || !form.phone || !form.address) {
       setError('Please fill in your name, phone number, and delivery address.');
       return false;
     }
     if (paymentMethod === 'paystack' && !form.email) {
       setError('Please enter your email address for the payment receipt.');
-      return false;
-    }
-    if (items.length === 0) {
-      setError('Your cart is empty.');
       return false;
     }
     if (belowMinimum) {
@@ -54,6 +53,7 @@ export default function Checkout() {
     setError('');
     try {
       const order = await apiPost('/api/orders', {
+        vendor_id: vendorId,
         customer_name: form.customer_name,
         phone: form.phone,
         address: form.address,
@@ -106,29 +106,23 @@ export default function Checkout() {
     handler.openIframe();
   }
 
-  if (isClosed) {
+  if (items.length === 0) {
     return (
       <div className="form-page">
-        <h1 style={{ fontSize: 26, marginBottom: 12 }}>We're closed right now</h1>
-        <p style={{ color: 'rgba(32,26,21,0.7)' }}>
-          Ordering is paused until we reopen. Please check back soon, or message us on WhatsApp for updates.
-        </p>
-        <Link to="/" style={{ display: 'inline-block', marginTop: 20, fontWeight: 600 }}>
-          ← Back to menu
-        </Link>
+        <h1 style={{ fontSize: 26, marginBottom: 12 }}>Your cart is empty</h1>
+        <Link to="/" style={{ fontWeight: 600 }}>← Browse restaurants</Link>
       </div>
     );
   }
 
   return (
     <div className="form-page">
-      <h1 style={{ fontSize: 26, marginBottom: 20 }}>Checkout</h1>
+      <h1 style={{ fontSize: 26, marginBottom: 4 }}>Checkout</h1>
+      <p style={{ color: 'rgba(32,26,21,0.6)', marginBottom: 20 }}>Ordering from {vendorName}</p>
 
       {error && <p className="error-banner">{error}</p>}
 
-      {minOrder > 0 && (
-        <p className="min-order-notice">Minimum order: ₦{minOrder.toLocaleString()}</p>
-      )}
+      {minOrder > 0 && <p className="min-order-notice">Minimum order: ₦{minOrder.toLocaleString()}</p>}
 
       <div className="field">
         <label>Full name</label>
@@ -141,9 +135,6 @@ export default function Checkout() {
       <div className="field">
         <label>Delivery address</label>
         <textarea rows={3} value={form.address} onChange={(e) => update('address', e.target.value)} />
-        <p className="min-order-notice" style={{ marginTop: 6 }}>
-          Not sure if we deliver to your area? Message us on WhatsApp to check before ordering.
-        </p>
       </div>
       <div className="field">
         <label>Notes (optional)</label>
@@ -152,16 +143,10 @@ export default function Checkout() {
 
       <h2 className="section-title" style={{ marginTop: 8 }}>Payment method</h2>
       <div className="payment-options">
-        <button
-          className={`payment-option ${paymentMethod === 'cod' ? 'selected' : ''}`}
-          onClick={() => setPaymentMethod('cod')}
-        >
+        <button className={`payment-option ${paymentMethod === 'cod' ? 'selected' : ''}`} onClick={() => setPaymentMethod('cod')}>
           Pay on delivery
         </button>
-        <button
-          className={`payment-option ${paymentMethod === 'paystack' ? 'selected' : ''}`}
-          onClick={() => setPaymentMethod('paystack')}
-        >
+        <button className={`payment-option ${paymentMethod === 'paystack' ? 'selected' : ''}`} onClick={() => setPaymentMethod('paystack')}>
           Pay online now
         </button>
       </div>
@@ -173,18 +158,9 @@ export default function Checkout() {
         </div>
       )}
 
-      <div className="cart-summary-row">
-        <span>Subtotal</span>
-        <span>₦{subtotal.toLocaleString()}</span>
-      </div>
-      <div className="cart-summary-row">
-        <span>Delivery fee</span>
-        <span>₦{DELIVERY_FEE.toLocaleString()}</span>
-      </div>
-      <div className="cart-total-row">
-        <span>Total</span>
-        <span>₦{total.toLocaleString()}</span>
-      </div>
+      <div className="cart-summary-row"><span>Subtotal</span><span>₦{subtotal.toLocaleString()}</span></div>
+      <div className="cart-summary-row"><span>Delivery fee</span><span>₦{DELIVERY_FEE.toLocaleString()}</span></div>
+      <div className="cart-total-row"><span>Total</span><span>₦{total.toLocaleString()}</span></div>
 
       <button className="primary-button" disabled={loading || belowMinimum} onClick={handlePlaceOrder}>
         {loading ? 'Placing order…' : paymentMethod === 'cod' ? 'Place order' : `Pay ₦${total.toLocaleString()}`}

@@ -8,7 +8,7 @@ export default function Header({ onOpenCart }) {
     <header className="site-header">
       <div className="site-header-inner">
         <Link to="/" className="brand">
-          Il<span>é</span> Kitchen
+          Il<span>é</span> Market
         </Link>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           <Link to="/my-orders" style={{ fontSize: 14, fontWeight: 600 }}>
