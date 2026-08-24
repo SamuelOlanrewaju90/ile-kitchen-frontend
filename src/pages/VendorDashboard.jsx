@@ -21,6 +21,48 @@ function playNewOrderBeep() {
   } catch (err) {}
 }
 
+function PayoutSettings({ profile, token, onSaved }) {
+  const [subaccount, setSubaccount] = useState(profile.paystack_subaccount_code || '');
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  async function save() {
+    setSaving(true);
+    setSaved(false);
+    try {
+      const updated = await apiPut('/api/vendors/me/profile', { paystack_subaccount_code: subaccount }, token);
+      onSaved(updated);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="settings-panel">
+      <h2 style={{ fontSize: 16, marginBottom: 4 }}>Getting paid</h2>
+      <p style={{ fontSize: 13, color: 'rgba(32,26,21,0.6)', marginBottom: 12 }}>
+        Your platform commission is <strong>{profile.commission_rate}%</strong>, taken from each order's food total (not the delivery fee).
+      </p>
+      <div className="field">
+        <label>Paystack subaccount code (optional)</label>
+        <input
+          value={subaccount}
+          onChange={(e) => setSubaccount(e.target.value)}
+          placeholder="ACCT_xxxxxxxxxxxx"
+        />
+      </div>
+      <p style={{ fontSize: 12, color: 'rgba(32,26,21,0.5)', marginBottom: 12 }}>
+        Add this and online payments split automatically — your share lands straight in your own bank account via Paystack, no waiting on us. Without it, we hold online payments and settle with you manually, same as cash orders. Generate a subaccount code from your own Paystack dashboard under Settings → Subaccounts.
+      </p>
+      <button className="primary-button" disabled={saving} onClick={save}>
+        {saving ? 'Saving…' : saved ? 'Saved ✓' : 'Save'}
+      </button>
+    </div>
+  );
+}
+
 export default function VendorDashboard() {
   const [profile, setProfile] = useState(null);
   const [orders, setOrders] = useState([]);
@@ -78,6 +120,10 @@ export default function VendorDashboard() {
     navigate('/vendor/login');
   }
 
+  const unpaidCodTotal = orders
+    .filter((o) => o.order_status === 'delivered' && o.payment_method === 'cod' && !o.payout_settled)
+    .reduce((sum, o) => sum + Number(o.platform_fee), 0);
+
   return (
     <div>
       <div className="dash-header">
@@ -113,6 +159,14 @@ export default function VendorDashboard() {
           </div>
         )}
 
+        {profile && <PayoutSettings profile={profile} token={token} onSaved={setProfile} />}
+
+        {unpaidCodTotal > 0 && (
+          <p className="error-banner">
+            You've collected cash orders totaling ₦{unpaidCodTotal.toLocaleString()} owed to the platform as commission. We'll reach out to settle this — or message us on WhatsApp anytime.
+          </p>
+        )}
+
         <h2 style={{ fontSize: 18, marginBottom: 12 }}>Orders</h2>
         {orders.length === 0 && !error && <p>No orders yet.</p>}
 
@@ -135,6 +189,9 @@ export default function VendorDashboard() {
             <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700 }}>
               <span>Total</span>
               <span>₦{Number(order.total).toLocaleString()}</span>
+            </div>
+            <div style={{ fontSize: 13, color: 'rgba(32,26,21,0.6)', marginTop: 4 }}>
+              Your payout: ₦{Number(order.vendor_payout).toLocaleString()} (₦{Number(order.platform_fee).toLocaleString()} platform commission)
             </div>
             <select className="status-select" value={order.order_status} onChange={(e) => updateStatus(order.id, e.target.value)}>
               {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}

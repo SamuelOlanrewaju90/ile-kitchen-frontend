@@ -15,10 +15,14 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [settings, setSettings] = useState(null);
+  const [vendor, setVendor] = useState(null);
 
   useEffect(() => {
     apiGet('/api/settings').then(setSettings).catch(() => {});
-  }, []);
+    if (vendorId) {
+      apiGet(`/api/vendors/${vendorId}`).then(setVendor).catch(() => {});
+    }
+  }, [vendorId]);
 
   const total = subtotal + DELIVERY_FEE;
   const minOrder = settings ? Number(settings.min_order_amount || 0) : 0;
@@ -90,7 +94,7 @@ export default function Checkout() {
       return;
     }
 
-    const handler = window.PaystackPop.setup({
+    const paystackConfig = {
       key: PAYSTACK_PUBLIC_KEY,
       email: form.email,
       amount: Math.round(total * 100),
@@ -102,7 +106,21 @@ export default function Checkout() {
       onClose: function () {
         setError('Payment was not completed.');
       }
-    });
+    };
+
+    // If this vendor has added their own Paystack subaccount, split the
+    // payment automatically: our platform_fee comes to us, the vendor
+    // absorbs the standard Paystack transaction charge, and the rest
+    // lands directly in the vendor's own bank account via Paystack —
+    // no manual reconciliation needed for this part of the order.
+    if (vendor?.paystack_subaccount_code) {
+      const platformFee = Math.round(subtotal * (Number(vendor.commission_rate) / 100));
+      paystackConfig.subaccount = vendor.paystack_subaccount_code;
+      paystackConfig.transaction_charge = Math.round(platformFee * 100);
+      paystackConfig.bearer = 'subaccount';
+    }
+
+    const handler = window.PaystackPop.setup(paystackConfig);
     handler.openIframe();
   }
 
