@@ -385,6 +385,11 @@ textarea:focus-visible {
 .status-out_for_delivery { background: rgba(51,80,46,0.15); color: var(--leaf); }
 .status-delivered { background: rgba(51,80,46,0.9); color: white; }
 .status-cancelled { background: rgba(166,58,46,0.15); color: var(--chili); }
+.status-pending { background: #e7e0d2; color: var(--ink); }
+.status-confirmed { background: rgba(201,138,58,0.2); color: var(--gold-dark); }
+.status-ready { background: rgba(201,138,58,0.3); color: var(--gold-dark); }
+.status-picked_up { background: rgba(51,80,46,0.15); color: var(--leaf); }
+.status-in_transit { background: rgba(51,80,46,0.3); color: var(--leaf); }
 
 .dash-header {
   display: flex;

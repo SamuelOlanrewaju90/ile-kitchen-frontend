@@ -18,3 +18,11 @@ export function AdminRoute({ children }) {
   }
   return children;
 }
+
+// Riders share the same login/token storage as vendors (one unified
+// account system) — this route just checks a session exists.
+export function RiderRoute({ children }) {
+  const token = localStorage.getItem('vendor_token');
+  if (!token) return <Navigate to="/rider/login" replace />;
+  return children;
+}

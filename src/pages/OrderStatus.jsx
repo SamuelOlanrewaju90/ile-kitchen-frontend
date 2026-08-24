@@ -38,6 +38,31 @@ export default function OrderStatus() {
         {STATUS_LABELS[order.order_status]}
       </span>
 
+      {order.rider_name && ['picked_up', 'in_transit'].includes(order.delivery_status) && (
+        <div className="settings-panel" style={{ marginTop: 16 }}>
+          <div style={{ fontWeight: 600, marginBottom: 6 }}>
+            {order.rider_name} is on the way with your order
+          </div>
+          {order.rider_lat && order.rider_lng ? (
+            <>
+              <a
+                href={`https://www.google.com/maps?q=${order.rider_lat},${order.rider_lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ fontWeight: 600, color: 'var(--leaf)' }}
+              >
+                Open rider's live location in Maps →
+              </a>
+              <p style={{ fontSize: 12, color: 'rgba(32,26,21,0.5)', marginTop: 6 }}>
+                Last updated {new Date(order.rider_location_updated_at).toLocaleTimeString()}
+              </p>
+            </>
+          ) : (
+            <p style={{ fontSize: 13, color: 'rgba(32,26,21,0.6)' }}>Waiting for the rider's location…</p>
+          )}
+        </div>
+      )}
+
       <div style={{ marginTop: 24 }}>
         <h2 className="section-title" style={{ marginTop: 0 }}>Order summary</h2>
         {order.items.map((item, idx) => (
