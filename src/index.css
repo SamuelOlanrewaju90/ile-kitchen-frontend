@@ -436,6 +436,50 @@ textarea:focus-visible {
   padding: 30px 20px 50px;
 }
 
+/* Search and filters on vendor list */
+.search-bar {
+  margin: 8px 0 12px;
+}
+.search-bar input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 12px 18px;
+  font-size: 15px;
+  background: white;
+  font-family: var(--font-body);
+}
+
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.filter-row select {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  background: white;
+  font-family: var(--font-body);
+}
+
+.filter-toggle {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font-size: 13px;
+  background: white;
+  font-weight: 600;
+}
+.filter-toggle.active {
+  background: var(--leaf);
+  color: white;
+  border-color: var(--leaf);
+}
+
 /* Closed banner */
 .closed-banner {
   background: var(--chili);
