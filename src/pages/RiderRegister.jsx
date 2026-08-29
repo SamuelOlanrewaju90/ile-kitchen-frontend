@@ -8,9 +8,7 @@ export default function RiderRegister() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  function update(field, value) {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  }
+  function update(field, value) { setForm((prev) => ({ ...prev, [field]: value })); }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -35,9 +33,7 @@ export default function RiderRegister() {
   return (
     <div className="form-page">
       <h1 style={{ fontSize: 26, marginBottom: 4 }}>Become a rider</h1>
-      <p style={{ color: 'rgba(32,26,21,0.6)', marginBottom: 20 }}>
-        Accept nearby deliveries and get paid per drop.
-      </p>
+      <p style={{ color: 'rgba(32,26,21,0.6)', marginBottom: 20 }}>Accept nearby deliveries and get paid per drop.</p>
       {error && <p className="error-banner">{error}</p>}
       <form onSubmit={handleSubmit}>
         <div className="field"><label>Full name</label><input value={form.name} onChange={(e) => update('name', e.target.value)} /></div>

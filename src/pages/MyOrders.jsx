@@ -39,9 +39,7 @@ function ReviewForm({ order, onSubmitted }) {
       <div style={{ fontWeight: 600, fontSize: 14, marginBottom: 8 }}>Rate this order</div>
       <div className="star-picker">
         {[1, 2, 3, 4, 5].map((n) => (
-          <button key={n} type="button" className={n <= rating ? 'filled' : ''} onClick={() => setRating(n)}>
-            ★
-          </button>
+          <button key={n} type="button" className={n <= rating ? 'filled' : ''} onClick={() => setRating(n)}>★</button>
         ))}
       </div>
       <textarea
@@ -49,15 +47,7 @@ function ReviewForm({ order, onSubmitted }) {
         placeholder="Optional comment…"
         value={comment}
         onChange={(e) => setComment(e.target.value)}
-        style={{
-          width: '100%',
-          border: '1px solid var(--line)',
-          borderRadius: 8,
-          padding: '8px 10px',
-          fontFamily: 'inherit',
-          fontSize: 14,
-          marginBottom: 8
-        }}
+        style={{ width: '100%', border: '1px solid var(--line)', borderRadius: 8, padding: '8px 10px', fontFamily: 'inherit', fontSize: 14, marginBottom: 8 }}
       />
       {error && <p className="error-banner" style={{ marginBottom: 8 }}>{error}</p>}
       <button className="secondary-button active" disabled={submitting} onClick={submit}>
@@ -104,7 +94,7 @@ export default function MyOrders() {
     e.stopPropagation();
     order.items.forEach((item) => {
       for (let i = 0; i < item.quantity; i++) {
-        addItem({ id: item.id, name: item.name, price: item.price });
+        addItem({ id: item.id, name: item.name, price: item.price }, order.vendor_id, order.vendor_name);
       }
     });
     navigate('/checkout');
@@ -127,9 +117,7 @@ export default function MyOrders() {
       {error && <p className="error-banner" style={{ marginTop: 16 }}>{error}</p>}
 
       {orders && orders.length === 0 && !error && (
-        <p style={{ marginTop: 20, color: 'rgba(32,26,21,0.6)' }}>
-          No orders found for that number yet.
-        </p>
+        <p style={{ marginTop: 20, color: 'rgba(32,26,21,0.6)' }}>No orders found for that number yet.</p>
       )}
 
       {orders && orders.length > 0 && (
@@ -139,27 +127,16 @@ export default function MyOrders() {
               <Link to={`/order/${order.id}`} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>
                 <div className="order-card-top">
                   <div>
-                    <strong>Order #{order.id}</strong>
+                    <strong>Order #{order.id} — {order.vendor_name}</strong>
                     <div style={{ fontSize: 13, color: 'rgba(32,26,21,0.6)' }}>
-                      {new Date(order.created_at).toLocaleDateString(undefined, {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric',
-                        hour: 'numeric',
-                        minute: '2-digit'
-                      })}
+                      {new Date(order.created_at).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit' })}
                     </div>
                   </div>
-                  <span className={`status-badge status-${order.order_status}`}>
-                    {STATUS_LABELS[order.order_status]}
-                  </span>
+                  <span className={`status-badge status-${order.order_status}`}>{STATUS_LABELS[order.order_status]}</span>
                 </div>
                 <div className="order-items-list">
                   {order.items.map((item, idx) => (
-                    <span key={idx}>
-                      {item.quantity} × {item.name}
-                      {idx < order.items.length - 1 ? ', ' : ''}
-                    </span>
+                    <span key={idx}>{item.quantity} × {item.name}{idx < order.items.length - 1 ? ', ' : ''}</span>
                   ))}
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, marginTop: 6 }}>
@@ -169,17 +146,9 @@ export default function MyOrders() {
               </Link>
 
               <div className="order-actions">
-                <button className="secondary-button" onClick={(e) => orderAgain(order, e)}>
-                  Order again
-                </button>
+                <button className="secondary-button" onClick={(e) => orderAgain(order, e)}>Order again</button>
                 {order.order_status === 'delivered' && !order.has_review && reviewingId !== order.id && (
-                  <button
-                    className="secondary-button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setReviewingId(order.id);
-                    }}
-                  >
+                  <button className="secondary-button" onClick={(e) => { e.stopPropagation(); setReviewingId(order.id); }}>
                     Leave a review
                   </button>
                 )}
@@ -190,13 +159,7 @@ export default function MyOrders() {
               )}
 
               {reviewingId === order.id && (
-                <ReviewForm
-                  order={order}
-                  onSubmitted={() => {
-                    setReviewingId(null);
-                    lookup();
-                  }}
-                />
+                <ReviewForm order={order} onSubmitted={() => { setReviewingId(null); lookup(); }} />
               )}
             </div>
           ))}

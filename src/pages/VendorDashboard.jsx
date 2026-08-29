@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { apiGet, apiPut } from '../api.js';
+import NotificationBell from '../components/NotificationBell.jsx';
 
 const STATUS_OPTIONS = ['received', 'preparing', 'out_for_delivery', 'delivered', 'cancelled'];
 
@@ -47,14 +48,10 @@ function PayoutSettings({ profile, token, onSaved }) {
       </p>
       <div className="field">
         <label>Paystack subaccount code (optional)</label>
-        <input
-          value={subaccount}
-          onChange={(e) => setSubaccount(e.target.value)}
-          placeholder="ACCT_xxxxxxxxxxxx"
-        />
+        <input value={subaccount} onChange={(e) => setSubaccount(e.target.value)} placeholder="ACCT_xxxxxxxxxxxx" />
       </div>
       <p style={{ fontSize: 12, color: 'rgba(32,26,21,0.5)', marginBottom: 12 }}>
-        Add this and online payments split automatically — your share lands straight in your own bank account via Paystack, no waiting on us. Without it, we hold online payments and settle with you manually, same as cash orders. Generate a subaccount code from your own Paystack dashboard under Settings → Subaccounts.
+        Add this and online payments split automatically — your share lands straight in your own bank account via Paystack. Without it, we settle with you manually, same as cash orders. Generate a subaccount code from your own Paystack dashboard under Settings → Subaccounts.
       </p>
       <button className="primary-button" disabled={saving} onClick={save}>
         {saving ? 'Saving…' : saved ? 'Saved ✓' : 'Save'}
@@ -129,6 +126,7 @@ export default function VendorDashboard() {
       <div className="dash-header">
         <h1 style={{ fontSize: 22 }}>{profile?.name || 'Vendor dashboard'}</h1>
         <div style={{ display: 'flex', gap: 8 }}>
+          <NotificationBell />
           {user.is_admin && (
             <Link to="/admin" className="cart-button" style={{ textDecoration: 'none' }}>
               Admin

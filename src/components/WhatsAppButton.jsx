@@ -1,5 +1,3 @@
-// The WhatsApp number is pulled from your backend settings so you
-// can change it later without redeploying the frontend.
 import { useEffect, useState } from 'react';
 import { apiGet } from '../api.js';
 

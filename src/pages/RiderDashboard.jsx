@@ -34,8 +34,6 @@ export default function RiderDashboard() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // While available, keep reporting GPS location to the backend so
-  // customers tracking an active delivery see a reasonably fresh position.
   useEffect(() => {
     if (!profile?.is_available) {
       if (watchId.current !== null) {
@@ -51,10 +49,7 @@ export default function RiderDashboard() {
     watchId.current = navigator.geolocation.watchPosition(
       (position) => {
         setLocationError('');
-        apiPut('/api/riders/me/location', {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }, token).catch(() => {});
+        apiPut('/api/riders/me/location', { lat: position.coords.latitude, lng: position.coords.longitude }, token).catch(() => {});
       },
       () => setLocationError('Location permission denied — turn it on to receive deliveries.'),
       { enableHighAccuracy: true, maximumAge: 10000 }
@@ -139,22 +134,16 @@ export default function RiderDashboard() {
                     <strong>#{order.id} — {order.vendor_name}</strong>
                     <div style={{ fontSize: 13, color: 'rgba(32,26,21,0.6)' }}>Pickup: {order.vendor_address}</div>
                   </div>
-                  <span className={`status-badge status-${order.delivery_status}`}>
-                    {order.delivery_status.replace(/_/g, ' ')}
-                  </span>
+                  <span className={`status-badge status-${order.delivery_status}`}>{order.delivery_status.replace(/_/g, ' ')}</span>
                 </div>
                 <div style={{ fontSize: 13 }}>Deliver to: {order.address}</div>
                 <div style={{ fontSize: 13, color: 'rgba(32,26,21,0.6)' }}>{order.customer_name} · {order.phone}</div>
                 <div className="order-actions">
                   {order.delivery_status === 'picked_up' && (
-                    <button className="secondary-button active" onClick={() => updateDeliveryStatus(order.id, 'in_transit')}>
-                      Start delivery
-                    </button>
+                    <button className="secondary-button active" onClick={() => updateDeliveryStatus(order.id, 'in_transit')}>Start delivery</button>
                   )}
                   {order.delivery_status === 'in_transit' && (
-                    <button className="secondary-button active" onClick={() => updateDeliveryStatus(order.id, 'delivered')}>
-                      Mark delivered
-                    </button>
+                    <button className="secondary-button active" onClick={() => updateDeliveryStatus(order.id, 'delivered')}>Mark delivered</button>
                   )}
                 </div>
               </div>
@@ -176,9 +165,7 @@ export default function RiderDashboard() {
                   <span className="price">₦{Number(order.delivery_fee).toLocaleString()}</span>
                 </div>
                 <div style={{ fontSize: 13 }}>Deliver to: {order.address}</div>
-                <button className="secondary-button active" style={{ marginTop: 10 }} onClick={() => acceptOrder(order.id)}>
-                  Accept delivery
-                </button>
+                <button className="secondary-button active" style={{ marginTop: 10 }} onClick={() => acceptOrder(order.id)}>Accept delivery</button>
               </div>
             ))}
           </>
@@ -195,9 +182,7 @@ export default function RiderDashboard() {
               <div className="order-card" key={order.id}>
                 <div className="order-card-top">
                   <strong>#{order.id} — {order.vendor_name}</strong>
-                  <span className={`status-badge status-${order.delivery_status}`}>
-                    {order.delivery_status.replace(/_/g, ' ')}
-                  </span>
+                  <span className={`status-badge status-${order.delivery_status}`}>{order.delivery_status.replace(/_/g, ' ')}</span>
                 </div>
               </div>
             ))}

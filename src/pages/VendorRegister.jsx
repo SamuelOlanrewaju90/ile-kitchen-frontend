@@ -10,12 +10,8 @@ export default function VendorRegister() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  function updateAccount(field, value) {
-    setAccount((prev) => ({ ...prev, [field]: value }));
-  }
-  function updateProfile(field, value) {
-    setProfile((prev) => ({ ...prev, [field]: value }));
-  }
+  function updateAccount(field, value) { setAccount((prev) => ({ ...prev, [field]: value })); }
+  function updateProfile(field, value) { setProfile((prev) => ({ ...prev, [field]: value })); }
 
   async function createAccount(e) {
     e.preventDefault();
@@ -26,8 +22,9 @@ export default function VendorRegister() {
     }
     setLoading(true);
     try {
-      const { token } = await apiPost('/api/auth/register', { ...account, role: 'vendor' });
+      const { token, user } = await apiPost('/api/auth/register', { ...account, role: 'vendor' });
       localStorage.setItem('vendor_token', token);
+      localStorage.setItem('vendor_user', JSON.stringify(user));
       setStep(2);
     } catch (err) {
       setError(err.message);

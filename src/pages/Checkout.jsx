@@ -108,11 +108,6 @@ export default function Checkout() {
       }
     };
 
-    // If this vendor has added their own Paystack subaccount, split the
-    // payment automatically: our platform_fee comes to us, the vendor
-    // absorbs the standard Paystack transaction charge, and the rest
-    // lands directly in the vendor's own bank account via Paystack —
-    // no manual reconciliation needed for this part of the order.
     if (vendor?.paystack_subaccount_code) {
       const platformFee = Math.round(subtotal * (Number(vendor.commission_rate) / 100));
       paystackConfig.subaccount = vendor.paystack_subaccount_code;

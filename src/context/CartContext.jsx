@@ -7,9 +7,6 @@ export function CartProvider({ children }) {
   const [vendorId, setVendorId] = useState(null);
   const [vendorName, setVendorName] = useState('');
 
-  // Marketplace carts can only hold items from one vendor at a time
-  // (same behaviour as Glovo/Uber Eats). Adding from a different vendor
-  // asks first, then clears and starts fresh.
   function addItem(menuItem, fromVendorId, fromVendorName) {
     if (vendorId !== null && vendorId !== fromVendorId) {
       const confirmed = window.confirm(

@@ -24,7 +24,7 @@ export default function VendorList() {
 
     const timeout = setTimeout(() => {
       apiGet(`/api/vendors?${params.toString()}`).then(setVendors).catch((err) => setError(err.message));
-    }, 250); // small debounce so typing doesn't fire a request per keystroke
+    }, 250);
 
     return () => clearTimeout(timeout);
   }, [search, cuisine, openOnly, sort]);
