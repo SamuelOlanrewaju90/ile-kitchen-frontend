@@ -70,6 +70,14 @@ export default function Checkout() {
       clearCart();
       navigate(`/order/${order.id}`);
     } catch (err) {
+      // If the order already exists (webhook created it in the background
+      // while this request was in flight — very rare, but possible on a
+      // slow connection), just move on instead of showing an error.
+      if (err.message && err.message.toLowerCase().includes('already')) {
+        clearCart();
+        navigate('/my-orders');
+        return;
+      }
       setError(err.message);
     } finally {
       setLoading(false);
@@ -100,6 +108,18 @@ export default function Checkout() {
       amount: Math.round(total * 100),
       currency: 'NGN',
       ref: `ILE-${Date.now()}`,
+      // Attached so the Paystack webhook can reconstruct this exact order
+      // even if this browser tab closes the instant payment succeeds and
+      // the callback below never runs. This is the fix that makes payment
+      // confirmation reliable instead of depending only on this callback.
+      metadata: {
+        vendor_id: vendorId,
+        customer_name: form.customer_name,
+        phone: form.phone,
+        address: form.address,
+        notes: form.notes,
+        items: JSON.stringify(items)
+      },
       callback: function (response) {
         submitOrder(response.reference);
       },
@@ -108,6 +128,11 @@ export default function Checkout() {
       }
     };
 
+    // If this vendor has added their own Paystack subaccount, split the
+    // payment automatically: our platform_fee comes to us, the vendor
+    // absorbs the standard Paystack transaction charge, and the rest
+    // lands directly in the vendor's own bank account via Paystack —
+    // no manual reconciliation needed for this part of the order.
     if (vendor?.paystack_subaccount_code) {
       const platformFee = Math.round(subtotal * (Number(vendor.commission_rate) / 100));
       paystackConfig.subaccount = vendor.paystack_subaccount_code;
