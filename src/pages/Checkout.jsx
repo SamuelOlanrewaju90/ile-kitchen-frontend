@@ -120,10 +120,10 @@ export default function Checkout() {
         notes: form.notes,
         items: JSON.stringify(items)
       },
-      callback: function (response) {
+      onSuccess: function (response) {
         submitOrder(response.reference);
       },
-      onClose: function () {
+      onCancel: function () {
         setError('Payment was not completed.');
       }
     };
@@ -140,8 +140,11 @@ export default function Checkout() {
       paystackConfig.bearer = 'subaccount';
     }
 
-    const handler = window.PaystackPop.setup(paystackConfig);
-    handler.openIframe();
+    // v2 API: newTransaction() replaces setup()+openIframe(). It uses a
+    // full-page redirect for the bank-auth/OTP step instead of a popup
+    // window, which avoids the "about:blank" mobile popup-blocking issue.
+    const popup = new window.PaystackPop();
+    popup.newTransaction(paystackConfig);
   }
 
   if (items.length === 0) {
@@ -205,4 +208,5 @@ export default function Checkout() {
       </button>
     </div>
   );
-}
+                                           }
+      
